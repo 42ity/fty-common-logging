@@ -166,7 +166,12 @@ void Ftylog::removeConsoleAppenders(log4cplus::Logger logger)
 }
 
 //Switch the logging system to verbose
-void Ftylog::setVeboseMode()
+void Ftylog::setVeboseMode() // legacy misnomer
+{
+  setVerboseMode();
+}
+
+void Ftylog::setVerboseMode()
 {
   //Save the loglevel of the logger
   log4cplus::LogLevel oldLevel = _logger.getLogLevel();
@@ -598,9 +603,14 @@ void ftylog_insertLog(Ftylog * log, int level, const char* file, int line,
 }
 
 //Switch to verbose mode
-void ftylog_setVeboseMode(Ftylog * log)
+void ftylog_setVeboseMode(Ftylog * log) // legacy misnomer
 {
-  log->setVeboseMode();
+  log->setVerboseMode();
+}
+
+void ftylog_setVerboseMode(Ftylog * log)
+{
+  log->setVerboseMode();
 }
 
 Ftylog * ftylog_getInstance()
@@ -714,9 +724,14 @@ void fty_common_log_fty_log_test(bool verbose)
   printf(" * Check log config file test : OK\n");
 
   printf(" * Check verbose \n");
-  test->setVeboseMode();
+  test->setVerboseMode();
   log_trace_log(test, "This is a verbose trace log");
   printf(" * Check verbose : OK \n");
+
+  printf(" * Check legacy misnamed vebose \n");
+  test->setVeboseMode();
+  log_trace_log(test, "This is a legacy misnamed vebose trace log");
+  printf(" * Check legacy misnamed vebose : OK \n");
 
   //delete the log file test
   remove("./src/selftest-rw/logfile.log");

@@ -196,7 +196,7 @@ for more information about appenders.
 ### Verbose mode
 
 For an agent with a verbose mode, you can call the C++ class method
-`Ftylog::setVeboseMode()` (or `ftylog_setVeboseMode(Ftylog* log)`
+`Ftylog::setVerboseMode()` (or `ftylog_setVerboseMode(Ftylog* log)`
 for C code) to change the logging system :
 
 * It sets (or overwrites if existing) a `ConsoleAppender` object with
