@@ -226,7 +226,8 @@ public:
   // -For the other appender, set the threshold parameter to the old logger log level
   //    if no loglevel defined for this appender
   // -Add a new console appender
-  void setVeboseMode();
+  void setVerboseMode();
+  void setVeboseMode(); // legacy misnomer
 
   /**
    * Set a context for a mapped diagnostic context (MDC)
@@ -308,7 +309,8 @@ void ftylog_insertLog(Ftylog * log, int level, const char* file, int line,
 // -For the other appender, set the threshold parameter to the old logger log level
 //    if no loglevel defined for this appender
 // -Add a new console appender
-void ftylog_setVeboseMode(Ftylog * log);
+void ftylog_setVerboseMode(Ftylog * log);
+void ftylog_setVeboseMode(Ftylog * log); // legacy misnomer
 
 // Return the Ftylog obect from the instance (C code)
 Ftylog * ftylog_getInstance();
