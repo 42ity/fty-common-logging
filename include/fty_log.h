@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 //  log4cplus
 #include <log4cplus/logger.h>
-#include "fty_common_logging_library.h"
+#include "fty-log/fty_logger.h"
 
 #else
 //  log4cplus
