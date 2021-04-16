@@ -21,25 +21,22 @@ etn_target(shared ${PROJECT_NAME}
         src/fty_logger.cpp
         fty_common_logging.pc.in
     FLAGS -Wno-format-nonliteral
-    USES_PUBLIC
-        log4cplus::log4cplus
+    USES
+        log4cplus
 )
 
 ########################################################################################################################
 
-if (BUILD_TESTING)
-    etn_test(${PROJECT_NAME}_test
-        CONFIGS
-            test/conf/test-config.conf
-        SOURCES
-            test/main.cpp
-        USES
-            ${PROJECT_NAME}
-            Catch2::Catch2
-    )
-
-    etn_coverage(${PROJECT_NAME}_test)
-endif()
+etn_test_target(${PROJECT_NAME}
+    CONFIGS
+        test/conf/test-config.conf
+    SOURCES
+        test/main.cpp
+    FLAGS
+        -Wno-extra-semi-stmt
+    SUBDIR
+        test
+)
 
 ########################################################################################################################
 

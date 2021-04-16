@@ -2,7 +2,7 @@
 #define CATCH_CONFIG_DISABLE_EXCEPTIONS
 #include <catch2/catch.hpp>
 
-#include <fty_log.h>
+#include "fty_log.h"
 
 TEST_CASE("Main")
 {
