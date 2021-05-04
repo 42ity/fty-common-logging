@@ -23,10 +23,9 @@ Priority:       optional
 Maintainer:     fty-common-logging Developers <eatonipcopensource@eaton.com>
 Standards-Version: 4.0.1.0
 Build-Depends: debhelper (>= 9),
-    pkg-config,
-    liblog4cplus-dev,
-    asciidoc-base | asciidoc, xmlto,
-    dh-autoreconf
+    cmake (>=3.0),
+    fty-cmake-dev,
+    liblog4cplus-dev
 
 Package: libfty-common-logging1
 Architecture: any
@@ -46,13 +45,4 @@ Description: fty-common-logging development tools
  This package contains development files for fty-common-logging:
  provides common logs
 
-Package: fty-common-logging-dbg
-Architecture: any
-Section: debug
-Priority: optional
-Depends:
-    libfty-common-logging1 (= ${binary:Version}),
-    ${misc:Depends}
-Description: fty-common-logging debugging symbols
- This package contains the debugging symbols for fty-common-logging:
- provides common logs.
+
