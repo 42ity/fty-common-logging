@@ -8,13 +8,13 @@ This is a library providing :
 
 ## How to build
 
-To build the `fty-common-logging` project run:
+To build, run:
 
 ```bash
-./autogen.sh
-./configure
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=usr -DBUILD_TESTING=On ..
 make
-make check # to run self-test
+sudo make install
 ```
 
 ## How to use Log System
