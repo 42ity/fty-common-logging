@@ -211,7 +211,7 @@ public:
     //    if no loglevel defined for this appender
     // -Add a new console appender
     void setVerboseMode();
-    void setVeboseMode(); // legacy misnomer
+    void setVeboseMode() { setVerboseMode(); } // legacy misnomer
 
     /**
      * Set a context for a mapped diagnostic context (MDC)

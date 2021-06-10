@@ -42,7 +42,10 @@
 
 using namespace log4cplus::helpers;
 
-// constructor
+////////////////////////
+// Ftylog section
+////////////////////////
+
 Ftylog::Ftylog(std::string component, std::string configFile)
 {
     _watchConfigFile = nullptr;
@@ -51,10 +54,11 @@ Ftylog::Ftylog(std::string component, std::string configFile)
 
 Ftylog::Ftylog()
 {
-    _watchConfigFile = nullptr;
     std::ostringstream threadId;
     threadId << std::this_thread::get_id();
     std::string name = "log-default-" + threadId.str();
+
+    _watchConfigFile = nullptr;
     init(name);
 }
 
@@ -86,7 +90,6 @@ void Ftylog::init(std::string component, std::string configFile)
     // load appenders
     loadAppenders();
 }
-
 
 // Clean objects in destructor
 Ftylog::~Ftylog()
@@ -136,9 +139,11 @@ void Ftylog::setPatternFromEnv()
 void Ftylog::setConsoleAppender()
 {
     _logger.removeAllAppenders();
+
     // create appender
     // Note: the first bool argument controls logging to stderr(true) as output stream
     SharedObjectPtr<log4cplus::Appender> append(new log4cplus::ConsoleAppender(true, true));
+
     // Create and affect layout
     append->setLayout(std::unique_ptr<log4cplus::Layout>(new log4cplus::PatternLayout(_layoutPattern)));
     append.get()->setName(LOG4CPLUS_TEXT("Console" + this->_agentName));
@@ -149,7 +154,8 @@ void Ftylog::setConsoleAppender()
 
 void Ftylog::removeConsoleAppenders(log4cplus::Logger logger)
 {
-    for (log4cplus::SharedAppenderPtr& appenderPtr : logger.getAllAppenders()) {
+    for (log4cplus::SharedAppenderPtr& appenderPtr : logger.getAllAppenders())
+    {
         log4cplus::Appender& app = *appenderPtr;
 
         if (typeid(app) == typeid(log4cplus::ConsoleAppender)) {
@@ -161,17 +167,14 @@ void Ftylog::removeConsoleAppenders(log4cplus::Logger logger)
 }
 
 // Switch the logging system to verbose
-void Ftylog::setVeboseMode() // legacy misnomer
-{
-    setVerboseMode();
-}
-
 void Ftylog::setVerboseMode()
 {
     // Save the loglevel of the logger
     log4cplus::LogLevel oldLevel = _logger.getLogLevel();
+
     // set log level of the logger to TRACE
     setLogLevelTrace();
+
     // Search if a console appender already exist in our logger instance or in
     // the root logger (we assume a flat hierarchy with the root logger and
     // specialized instances directly below the root logger)
@@ -191,6 +194,7 @@ void Ftylog::setVerboseMode()
     // Create and affect layout
     append->setLayout(std::unique_ptr<log4cplus::Layout>(new log4cplus::PatternLayout(_layoutPattern)));
     append.get()->setName(LOG4CPLUS_TEXT("Verbose-" + this->_agentName));
+
     // Add verbose appender to logger
     _logger.addAppender(append);
 }
@@ -235,9 +239,6 @@ void Ftylog::loadAppenders()
         setLogInitLevelFromEnv(varEnvInit);
     }
 
-    // by default, load console appenders
-    setConsoleAppender();
-
     // If true, load file
     bool loadFile = false;
 
@@ -260,7 +261,8 @@ void Ftylog::loadAppenders()
                 _configFile.c_str());
             _configFile = "";
         }
-    } else {
+    }
+    else {
         if (nullptr != varEnvInit)
             log_warning_log(this, "No log configuration file defined");
     }
@@ -279,9 +281,14 @@ void Ftylog::loadAppenders()
 
         // Load the file
         log4cplus::PropertyConfigurator::doConfigure(LOG4CPLUS_TEXT(_configFile));
+
         // Start the thread watching the modification of the log config file
         _watchConfigFile = new log4cplus::ConfigureAndWatchThread(_configFile.c_str(), 60000);
-    } else {
+    }
+    else {
+        // by default, set console appenders
+        setConsoleAppender();
+
         if (nullptr != varEnvInit)
             log_info_log(this,
                 "No log configuration file was loaded, will "
@@ -336,81 +343,27 @@ void Ftylog::setLogLevelFromEnv(const std::string& level)
 }
 
 // Set logger to a specific logging level
-void Ftylog::setLogLevelTrace()
-{
-    _logger.setLogLevel(log4cplus::TRACE_LOG_LEVEL);
-}
+void Ftylog::setLogLevelTrace()   { _logger.setLogLevel(log4cplus::TRACE_LOG_LEVEL); }
+void Ftylog::setLogLevelDebug()   { _logger.setLogLevel(log4cplus::DEBUG_LOG_LEVEL); }
+void Ftylog::setLogLevelInfo()    { _logger.setLogLevel(log4cplus::INFO_LOG_LEVEL); }
+void Ftylog::setLogLevelWarning() { _logger.setLogLevel(log4cplus::WARN_LOG_LEVEL); }
+void Ftylog::setLogLevelError()   { _logger.setLogLevel(log4cplus::ERROR_LOG_LEVEL); }
+void Ftylog::setLogLevelFatal()   { _logger.setLogLevel(log4cplus::FATAL_LOG_LEVEL); }
+void Ftylog::setLogLevelOff()     { _logger.setLogLevel(log4cplus::OFF_LOG_LEVEL); }
 
-void Ftylog::setLogLevelDebug()
-{
-    _logger.setLogLevel(log4cplus::DEBUG_LOG_LEVEL);
-}
-
-void Ftylog::setLogLevelInfo()
-{
-    _logger.setLogLevel(log4cplus::INFO_LOG_LEVEL);
-}
-
-void Ftylog::setLogLevelWarning()
-{
-    _logger.setLogLevel(log4cplus::WARN_LOG_LEVEL);
-}
-
-void Ftylog::setLogLevelError()
-{
-    _logger.setLogLevel(log4cplus::ERROR_LOG_LEVEL);
-}
-
-void Ftylog::setLogLevelFatal()
-{
-    _logger.setLogLevel(log4cplus::FATAL_LOG_LEVEL);
-}
-
-void Ftylog::setLogLevelOff()
-{
-    _logger.setLogLevel(log4cplus::OFF_LOG_LEVEL);
-}
-
-// Return true if the logging level is include in the logger log level
+// Return true if the logging level is included in the logger log level
 bool Ftylog::isLogLevel(log4cplus::LogLevel level)
 {
     return _logger.getLogLevel() <= level;
 }
 
-bool Ftylog::isLogTrace()
-{
-    return this->isLogLevel(log4cplus::TRACE_LOG_LEVEL);
-}
-
-bool Ftylog::isLogDebug()
-{
-    return this->isLogLevel(log4cplus::DEBUG_LOG_LEVEL);
-}
-
-bool Ftylog::isLogInfo()
-{
-    return this->isLogLevel(log4cplus::INFO_LOG_LEVEL);
-}
-
-bool Ftylog::isLogWarning()
-{
-    return this->isLogLevel(log4cplus::WARN_LOG_LEVEL);
-}
-
-bool Ftylog::isLogError()
-{
-    return this->isLogLevel(log4cplus::ERROR_LOG_LEVEL);
-}
-
-bool Ftylog::isLogFatal()
-{
-    return this->isLogLevel(log4cplus::FATAL_LOG_LEVEL);
-}
-
-bool Ftylog::isLogOff()
-{
-    return _logger.getLogLevel() == log4cplus::OFF_LOG_LEVEL;
-}
+bool Ftylog::isLogTrace()   { return isLogLevel(log4cplus::TRACE_LOG_LEVEL); }
+bool Ftylog::isLogDebug()   { return isLogLevel(log4cplus::DEBUG_LOG_LEVEL); }
+bool Ftylog::isLogInfo()    { return isLogLevel(log4cplus::INFO_LOG_LEVEL); }
+bool Ftylog::isLogWarning() { return isLogLevel(log4cplus::WARN_LOG_LEVEL); }
+bool Ftylog::isLogError()   { return isLogLevel(log4cplus::ERROR_LOG_LEVEL); }
+bool Ftylog::isLogFatal()   { return isLogLevel(log4cplus::FATAL_LOG_LEVEL); }
+bool Ftylog::isLogOff()     { return _logger.getLogLevel() == log4cplus::OFF_LOG_LEVEL; }
 
 // Call log4cplus system to print logs in logger appenders
 void Ftylog::insertLog(
@@ -455,7 +408,7 @@ void Ftylog::insertLog(log4cplus::LogLevel level, const char* file, int line, co
 }
 
 ////////////////////////
-// manageftylog section
+// ManageFtyLog section
 ////////////////////////
 
 Ftylog ManageFtyLog::_ftylogdefault = Ftylog("ftylog", FTY_COMMON_LOGGING_DEFAULT_CFG);
@@ -483,75 +436,80 @@ Ftylog* ftylog_new(const char* component, const char* logConfigFile)
 // destructor
 void ftylog_delete(Ftylog* log)
 {
-    delete log;
-    log = nullptr;
+    if (log) delete log;
 }
 
 // setter
 void ftylog_setConfigFile(Ftylog* log, const char* file)
 {
-    log->setConfigFile(std::string(file));
+    if (log) log->setConfigFile(std::string(file));
 }
 
 // Set the logger to a specific log level
 void ftylog_setLogLevelTrace(Ftylog* log)
 {
-    log->setLogLevelTrace();
+    if (log) log->setLogLevelTrace();
 }
 
 void ftylog_setLogLevelDebug(Ftylog* log)
 {
-    log->setLogLevelDebug();
+    if (log) log->setLogLevelDebug();
 }
 
 void ftylog_setLogLevelInfo(Ftylog* log)
 {
-    log->setLogLevelInfo();
+    if (log) log->setLogLevelInfo();
 }
 
 void ftylog_setLogLevelWarning(Ftylog* log)
 {
-    log->setLogLevelWarning();
+    if (log) log->setLogLevelWarning();
 }
 
 void ftylog_setLogLevelError(Ftylog* log)
 {
-    log->setLogLevelError();
+    if (log) log->setLogLevelError();
 }
 
 void ftylog_setLogLevelFatal(Ftylog* log)
 {
-    log->setLogLevelFatal();
+    if (log) log->setLogLevelFatal();
 }
 
 // Check the log level
 bool ftylog_isLogTrace(Ftylog* log)
 {
+    if (!log) return false;
     return log->isLogTrace();
 }
 
 bool ftylog_isLogDebug(Ftylog* log)
 {
+    if (!log) return false;
     return log->isLogDebug();
 }
 
 bool ftylog_isLogInfo(Ftylog* log)
 {
+    if (!log) return false;
     return log->isLogInfo();
 }
 
 bool ftylog_isLogWarning(Ftylog* log)
 {
+    if (!log) return false;
     return log->isLogWarning();
 }
 
 bool ftylog_isLogError(Ftylog* log)
 {
+    if (!log) return false;
     return log->isLogError();
 }
 
 bool ftylog_isLogFatal(Ftylog* log)
 {
+    if (!log) return false;
     return log->isLogTrace();
 }
 
@@ -567,12 +525,12 @@ void ftylog_insertLog(Ftylog* log, int level, const char* file, int line, const 
 // Switch to verbose mode
 void ftylog_setVeboseMode(Ftylog* log) // legacy misnomer
 {
-    log->setVerboseMode();
+    ftylog_setVerboseMode(log);
 }
 
 void ftylog_setVerboseMode(Ftylog* log)
 {
-    log->setVerboseMode();
+    if (log) log->setVerboseMode();
 }
 
 Ftylog* ftylog_getInstance()
