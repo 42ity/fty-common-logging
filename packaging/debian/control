@@ -25,7 +25,8 @@ Standards-Version: 4.0.1.0
 Build-Depends: debhelper (>= 9),
     cmake (>=3.0),
     fty-cmake-dev,
-    liblog4cplus-dev
+    liblog4cplus-dev,
+    libfmt-dev
 
 Package: libfty-common-logging1
 Architecture: any
@@ -40,6 +41,7 @@ Section: libdevel
 Depends:
     ${misc:Depends},
     liblog4cplus-dev,
+    libfmt-dev,
     libfty-common-logging1 (= ${binary:Version})
 Description: fty-common-logging development tools
  This package contains development files for fty-common-logging:

@@ -23,6 +23,8 @@ etn_target(shared ${PROJECT_NAME}
     FLAGS -Wno-format-nonliteral
     USES
         log4cplus
+    USES_PUBLIC
+        fmt::fmt
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
