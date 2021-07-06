@@ -479,38 +479,32 @@ void ftylog_setLogLevelFatal(Ftylog* log)
 // Check the log level
 bool ftylog_isLogTrace(Ftylog* log)
 {
-    if (!log) return false;
-    return log->isLogTrace();
+    return log ? log->isLogTrace() : false;
 }
 
 bool ftylog_isLogDebug(Ftylog* log)
 {
-    if (!log) return false;
-    return log->isLogDebug();
+    return log ? log->isLogDebug() : false;
 }
 
 bool ftylog_isLogInfo(Ftylog* log)
 {
-    if (!log) return false;
-    return log->isLogInfo();
+    return log ? log->isLogInfo() : false;
 }
 
 bool ftylog_isLogWarning(Ftylog* log)
 {
-    if (!log) return false;
-    return log->isLogWarning();
+    return log ? log->isLogWarning() : false;
 }
 
 bool ftylog_isLogError(Ftylog* log)
 {
-    if (!log) return false;
-    return log->isLogError();
+    return log ? log->isLogError() : false;
 }
 
 bool ftylog_isLogFatal(Ftylog* log)
 {
-    if (!log) return false;
-    return log->isLogTrace();
+    return log ? log->isLogTrace() : false;
 }
 
 // Print log in logger appenders
@@ -518,7 +512,7 @@ void ftylog_insertLog(Ftylog* log, int level, const char* file, int line, const 
 {
     va_list args;
     va_start(args, format);
-    log->insertLog(level, file, line, func, format, args);
+    if (log) log->insertLog(level, file, line, func, format, args);
     va_end(args);
 }
 
