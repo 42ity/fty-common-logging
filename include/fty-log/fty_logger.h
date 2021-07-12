@@ -125,6 +125,9 @@
 #define logFatal(...)\
     fmtlog(log4cplus::FATAL_LOG_LEVEL, __VA_ARGS__)
 
+#define logTrace(...)\
+    fmtlog(log4cplus::TRACE_LOG_LEVEL, __VA_ARGS__)
+
 #define fmtlog(level, ...) \
     ftylog_getInstance()->insertLog(level, __FILE__, __LINE__, __func__, fty::logger::format(__VA_ARGS__).c_str())
 
