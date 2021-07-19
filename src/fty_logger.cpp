@@ -126,6 +126,7 @@ void Ftylog::setLogLevelFromEnv()
     const char* varEnv = getenv("BIOS_LOG_LEVEL");
     setLogLevelFromEnv(varEnv ? varEnv : "");
 }
+
 void Ftylog::setPatternFromEnv()
 {
     // Get BIOS_LOG_PATTERN for a default patternlayout
@@ -267,6 +268,9 @@ void Ftylog::loadAppenders()
             log_warning_log(this, "No log configuration file defined");
     }
 
+    // by default, set console appenders
+    setConsoleAppender();
+
     // if no file or file not valid, set default ConsoleAppender
     if (loadFile) {
         if (nullptr != varEnvInit)
@@ -286,9 +290,6 @@ void Ftylog::loadAppenders()
         _watchConfigFile = new log4cplus::ConfigureAndWatchThread(_configFile.c_str(), 60000);
     }
     else {
-        // by default, set console appenders
-        setConsoleAppender();
-
         if (nullptr != varEnvInit)
             log_info_log(this,
                 "No log configuration file was loaded, will "
