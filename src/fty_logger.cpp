@@ -412,7 +412,7 @@ void Ftylog::insertLog(log4cplus::LogLevel level, const char* file, int line, co
 // ManageFtyLog section
 ////////////////////////
 
-Ftylog ManageFtyLog::_ftylogdefault = Ftylog("ftylog", FTY_COMMON_LOGGING_DEFAULT_CFG);
+Ftylog ManageFtyLog::_ftylogdefault = Ftylog("ftylog", "");
 
 Ftylog* ManageFtyLog::getInstanceFtylog()
 {
