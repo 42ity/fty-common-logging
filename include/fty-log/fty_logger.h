@@ -151,7 +151,7 @@ inline std::string format(const std::string& str, const Args&... args)
 #ifdef DEBUG
         throw;
 #endif
-        returnStr = str + " /!\ A log serialization error happened: " + e.what();
+        returnStr = str + " /!\\ A log serialization error happened: " + e.what();
     }
     return returnStr;
 }
