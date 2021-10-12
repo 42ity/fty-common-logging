@@ -144,19 +144,17 @@ inline std::string format(const std::string& str, const Args&... args)
     //fmt format can thow exception
     //In debug mode we want to take benefits of those exception to solve the formating issue
     //However that's not a good idea for production
-    std::string returnStr;
     try {
-        returnStr = fmt::format(str, args...);
-    } catch(std::exception& e) {
+        return fmt::format(str, args...);
+    } catch(const std::exception& e) {
 #ifdef DEBUG
         throw;
 #endif
-        returnStr = str + " /!\\ A log serialization error happened: " + e.what();
+        return str + " /!\\ A log serialization error happened: " + e.what();
     }
-    return returnStr;
 }
 
-}
+} // namespace fty::logger {
 
 class Ftylog
 {
