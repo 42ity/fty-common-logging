@@ -154,7 +154,7 @@ inline std::string format(const std::string& str, const Args&... args)
     }
 }
 
-} // namespace fty::logger {
+} // namespace fty::logger
 
 class Ftylog
 {
