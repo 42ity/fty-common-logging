@@ -141,10 +141,20 @@ inline std::string format(const std::string& str)
 template<typename... Args>
 inline std::string format(const std::string& str, const Args&... args)
 {
-    return fmt::format(str, args...);
+    //fmt format can thow exception
+    //In debug mode we want to take benefits of those exception to solve the formating issue
+    //However that's not a good idea for production
+    try {
+        return fmt::format(str, args...);
+    } catch(const std::exception& e) {
+#ifdef DEBUG
+        throw;
+#endif
+        return str + " /!\\ A log serialization error happened: " + e.what();
+    }
 }
 
-}
+} // namespace fty::logger
 
 class Ftylog
 {
