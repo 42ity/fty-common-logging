@@ -168,7 +168,7 @@ private:
     // log4cplus object to print logs
     log4cplus::Logger _logger;
     // Thread for watching modification of the log configuration file if any
-    log4cplus::ConfigureAndWatchThread* _watchConfigFile;
+    log4cplus::ConfigureAndWatchThread* _watchConfigFile{nullptr};
 
     // Initialize the Ftylog object
     void init(std::string _component, std::string logConfigFile = "");
