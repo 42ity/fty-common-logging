@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-@Library('etn-ipm2-jenkins') _
+@Library('etn-ipm2-jenkins@coverity_stub') _
 
 import params.CmakePipelineParams
 CmakePipelineParams parameters = new CmakePipelineParams()
