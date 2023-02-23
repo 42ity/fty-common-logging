@@ -42,13 +42,29 @@
 
 using namespace log4cplus::helpers;
 
+static std::mutex g_watchConfigFileMutex; // watchConfigFile create/delete access protection
+
+static log4cplus::ConfigureAndWatchThread* watchConfigFile_new(const std::string& configFile, unsigned int periodMs)
+{
+    std::lock_guard<std::mutex> lock(g_watchConfigFileMutex);
+    return new log4cplus::ConfigureAndWatchThread(configFile, periodMs);
+}
+
+static void watchConfigFile_delete(log4cplus::ConfigureAndWatchThread** o)
+{
+    std::lock_guard<std::mutex> lock(g_watchConfigFileMutex);
+    if (o && (*o)) {
+        delete *o;
+        *o = nullptr;
+    }
+}
+
 ////////////////////////
 // Ftylog section
 ////////////////////////
 
 Ftylog::Ftylog(std::string component, std::string configFile)
 {
-    _watchConfigFile = nullptr;
     init(component, configFile);
 }
 
@@ -58,16 +74,12 @@ Ftylog::Ftylog()
     threadId << std::this_thread::get_id();
     std::string name = "log-default-" + threadId.str();
 
-    _watchConfigFile = nullptr;
     init(name);
 }
 
 void Ftylog::init(std::string component, std::string configFile)
 {
-    if (nullptr != _watchConfigFile) {
-        delete _watchConfigFile;
-        _watchConfigFile = nullptr;
-    }
+    watchConfigFile_delete(&_watchConfigFile);
     _logger.shutdown();
     _agentName     = component;
     _configFile    = configFile;
@@ -94,10 +106,7 @@ void Ftylog::init(std::string component, std::string configFile)
 // Clean objects in destructor
 Ftylog::~Ftylog()
 {
-    if (nullptr != _watchConfigFile) {
-        delete _watchConfigFile;
-        _watchConfigFile = nullptr;
-    }
+     watchConfigFile_delete(&_watchConfigFile);
     _logger.shutdown();
 }
 
@@ -244,10 +253,7 @@ void Ftylog::loadAppenders()
     bool loadFile = false;
 
     // Stop the watch confile file thread if any
-    if (nullptr != _watchConfigFile) {
-        delete _watchConfigFile;
-        _watchConfigFile = nullptr;
-    }
+    watchConfigFile_delete(&_watchConfigFile);
 
     // if path to log config file
     if (!_configFile.empty()) {
@@ -287,7 +293,7 @@ void Ftylog::loadAppenders()
         log4cplus::PropertyConfigurator::doConfigure(LOG4CPLUS_TEXT(_configFile));
 
         // Start the thread watching the modification of the log config file
-        _watchConfigFile = new log4cplus::ConfigureAndWatchThread(_configFile.c_str(), 60000);
+        _watchConfigFile = watchConfigFile_new(_configFile, 60000);
     }
     else {
         if (nullptr != varEnvInit)
