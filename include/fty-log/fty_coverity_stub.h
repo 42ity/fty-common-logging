@@ -22,10 +22,11 @@
 #pragma once
 
 #ifdef COVERITY_STUB
-    #pragma  ================================ COVERITY_STUB DEFINED ===============================
+    #pragma  "==== COVERITY_STUB DEFINED ===="
 
-    // Stub for coverity memory leak detection in zeromq/czmq library
+    // Stub for coverity analysis (memory leak defect)
     // https://github.com/zeromq/czmq/blob/master/src/zstr.c
+    extern "C" void zstr_free(char **s);
     inline void zstr_free(char **s) {
         if (s && (*s)) {
             free(*s);
@@ -33,4 +34,4 @@
         }
     }
 
-#endif
+#endif //COVERITY_STUB

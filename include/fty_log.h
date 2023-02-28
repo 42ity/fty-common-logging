@@ -22,22 +22,15 @@
 #pragma once
 
 #ifdef __cplusplus
-//  log4cplus
+//  log4cplus C++ style
 #include <log4cplus/logger.h>
-#include "fty-log/fty_logger.h"
-
-#ifdef COVERITY_STUB
-#include "fty-log/fty_coverity_stub.h"
-#endif
-
 #else
-//  log4cplus
+//  log4cplus C style
 #include <log4cplus/clogger.h>
-#include "fty-log/fty_logger.h"
-
-#ifdef COVERITY_STUB
-#include "fty-log/fty_coverity_stub.h"
 #endif
+
+#include "fty-log/fty_logger.h"
+#include "fty-log/fty_coverity_stub.h"
 
 #endif
 
