@@ -31,6 +31,3 @@
 
 #include "fty-log/fty_logger.h"
 #include "fty-log/fty_coverity_stub.h"
-
-#endif
-
