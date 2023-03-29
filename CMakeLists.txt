@@ -17,6 +17,7 @@ etn_target(shared ${PROJECT_NAME}
     PUBLIC
         fty_log.h
         fty-log/fty_logger.h
+        fty-log/fty_coverity_stub.h
     SOURCES
         src/fty_logger.cpp
         fty_common_logging.pc.in

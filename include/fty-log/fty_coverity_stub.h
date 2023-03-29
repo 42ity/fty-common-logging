@@ -1,7 +1,7 @@
 /*  =========================================================================
-    fty-common-logging - Provides common logs
+    fty_coverity_stub - Coverity stub
 
-    Copyright (C) 2014 - 2020 Eaton
+    Copyright (C) 2014 - 2023 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,17 +17,21 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     =========================================================================
-*/
+ */
 
 #pragma once
 
-#ifdef __cplusplus
-//  log4cplus C++ style
-#include <log4cplus/logger.h>
-#else
-//  log4cplus C style
-#include <log4cplus/clogger.h>
-#endif
+#ifdef COVERITY_STUB
+    #pragma  "==== COVERITY_STUB DEFINED ===="
 
-#include "fty-log/fty_logger.h"
-#include "fty-log/fty_coverity_stub.h"
+    // Stub for coverity analysis (memory leak defect)
+    // https://github.com/zeromq/czmq/blob/master/src/zstr.c
+    extern "C" void zstr_free(char **s);
+    inline void zstr_free(char **s) {
+        if (s && (*s)) {
+            free(*s);
+            *s = NULL;
+        }
+    }
+
+#endif //COVERITY_STUB
