@@ -372,40 +372,47 @@ bool Ftylog::isLogError()   { return isLogLevel(log4cplus::ERROR_LOG_LEVEL); }
 bool Ftylog::isLogFatal()   { return isLogLevel(log4cplus::FATAL_LOG_LEVEL); }
 bool Ftylog::isLogOff()     { return _logger.getLogLevel() == log4cplus::OFF_LOG_LEVEL; }
 
-// Call log4cplus system to print logs in logger appenders
-void Ftylog::insertLog(
-    log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, va_list args)
+// insertLog C string message (final)
+void Ftylog::insertLogStr(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* message)
 {
-    char* buffer = nullptr;
-    int   r;
-
-    // Check if the level of this log is included in the log level
     if (!isLogLevel(level)) {
         return;
     }
-    // Construct the main log message
-    r = vasprintf(&buffer, format, args);
-    if (r == -1) {
-        fprintf(stderr,
-            "[ERROR]: %s:%d (%s) can't allocate enough memory for message "
-            "string: buffer",
-            __FILE__, __LINE__, __func__);
-        if (buffer) {
-            free(buffer);
-        }
-        return;
-    }
 
-    if (buffer == nullptr) {
-        log_error_log(this, "Buffer == NULL");
-        return;
-    }
-
-    // Give the printing job to log4cplus
-    log4cplus::detail::macro_forced_log(_logger, level, LOG4CPLUS_TEXT(buffer), file, line, func);
-    free(buffer);
+    // Launch log4cplus printing job
+    log4cplus::detail::macro_forced_log(_logger, level, LOG4CPLUS_TEXT((message ? message : "(null)")), file, line, func);
 }
 
+// insertLog va_list
+void Ftylog::insertLog(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, va_list args)
+{
+    if (!isLogLevel(level)) {
+        return;
+    }
+
+    // Construct the main log message
+    char* message = nullptr;
+    if (format) {
+        int r = vasprintf(&message, format, args);
+        if (r == -1) {
+            fprintf(stderr,
+                "[ERROR]: %s:%d (%s) can't allocate enough memory for message",
+                __FILE__, __LINE__, __func__);
+            if (message) {
+                free(message);
+            }
+            return;
+        }
+    }
+
+    insertLogStr(level, file, line, func, message);
+
+    if (message) {
+        free(message);
+    }
+}
+
+// insertLog variadics
 void Ftylog::insertLog(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, ...)
 {
     va_list args;

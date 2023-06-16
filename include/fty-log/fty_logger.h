@@ -129,7 +129,7 @@
     fmtlog(log4cplus::TRACE_LOG_LEVEL, __VA_ARGS__)
 
 #define fmtlog(level, ...) \
-    ftylog_getInstance()->insertLog(level, __FILE__, __LINE__, __func__, fty::logger::format(__VA_ARGS__).c_str())
+    ftylog_getInstance()->insertLogStr(level, __FILE__, __LINE__, __func__, fty::logger::format(__VA_ARGS__).c_str())
 
 namespace fty::logger {
 
@@ -244,12 +244,11 @@ public:
       \param file - name of file issued print, usually content of __FILE__ macro
       \param line - number of line, usually content of __LINE__ macro
       \param func - name of function issued log, usually content of __func__ macro
-      \param format - printf-like format string
+      \param format/message - printf-like format string, variadics or C string interfaces
      */
+    void insertLogStr(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* message);
+    void insertLog(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, va_list args);
     void insertLog(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, ...);
-
-    void insertLog(
-        log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, va_list args);
 
     // Load a specific appender if verbose mode is set to true :
     // -Save the logger logging level and set it to TRACE logging level
