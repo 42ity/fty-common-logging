@@ -118,3 +118,18 @@ TEST_CASE("Main")
     //  @selftest
     printf("OK\n");
 }
+
+TEST_CASE("IPMPROG-6348 C++ API SegFault")
+{
+    logInfo("%d%s"); // ***Exception: SegFault
+    logInfo("{}", "%s%s"); // ***Exception: SegFault
+
+    logTrace("%s%s {}", "trace");
+    logDebug("%i%s {}", "debug");
+    logInfo("%u%s {}", "info");
+    logWarn("%x%s {}", "warn");
+    logError("%lf%s {}", "error");
+
+    logInfo("%d%s {} %d%s", "%d%s");
+    logInfo("%s%s {} %s%s", "%s%s");
+}
