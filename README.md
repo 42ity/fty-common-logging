@@ -268,77 +268,12 @@ In the main `.h` file add
 
 ## How to compile and test projects using fty-common-logging by 42ITy standards
 
-### project.xml for C++ projects
-Add this top-level block in the `project.xml` file :
+### Compilation for C/C++ projects
 
-````
-    <!-- Note: pure C projects should use fty-log/fty_logger.h, C++ use fty_log.h -->
-    <use project = "fty-common-logging" libname = "libfty_common_logging"
-        header = "fty_log.h"
-        repository = "https://github.com/42ity/fty-common-logging.git"
-        release = "master"
-        test = "fty_common_logging_selftest" >
-
-        <!-- Note: pure C projects should use clogger.h, C++ use logger.h -->
-        <use project = "log4cplus"
-            header = "log4cplus/logger.h"
-            test = "appender_test"
-            repository = "https://github.com/42ity/log4cplus.git"
-            release = "1.1.2-FTY-master"
-            />
-    </use>
-````
-
-### project.xml for pure-C projects
-Add this top-level block in the `project.xml` file :
-
-````
-    <!-- Note: pure C projects should use fty-log/fty_logger.h, C++ use fty_log.h -->
-    <use project = "fty-common-logging" libname = "libfty_common_logging"
-        header = "fty-log/fty_logger.h"
-        repository = "https://github.com/42ity/fty-common-logging.git"
-        release = "master"
-        test = "fty_common_logging_selftest" >
-
-        <!-- Note: pure C projects should use clogger.h, C++ use logger.h -->
-        <use project = "log4cplus"
-            header = "log4cplus/clogger.h"
-            test = "appender_test"
-            repository = "https://github.com/42ity/log4cplus.git"
-            release = "1.1.2-FTY-master"
-            />
-    </use>
-````
-
-### How to pass Travis CI checks
-
-Re-generating the project structure and recipes with `zproject` templates
-will define installation of `log4cplus` package from the OS distribution,
-which is too old for our needs and is lacking otherwise. You should comment
-it away, to ensure that the 42ITy fork referenced above would be used.
-
-In recent zproject revisions, dependency code that can be compiled from
-source or taken from packages (the 42ITy project does not publish any at
-the moment) is defined in a separate list, so it suffices to comment away
-the reference to this list:
-
-````
-# NOTE: Our forks are checked out and built without pkg dependencies in use
-pkg_deps_prereqs: &pkg_deps_prereqs
-#    - *pkg_deps_prereqs_source
-    - *pkg_deps_prereqs_distro
-````
-
-Alternately, to avoid any errors, you can add these two lines in the
-`before_install` section of the `.travis.yml` file, to remove these
-packages if added into the build system (e.g. by some other dependencies):
-
-````
-before_install:
-- sudo apt-get remove liblog4cplus-dev
-- sudo apt-get autoremove
-````
-
-It is not recommended to do this right away (before the problem bites in
-practice) because calls to packaging have considerable overheads in the
-run-times of the tests.
+Add the library fty_common_logging in the cmake dependencies of your project:
+    etn_target(static ${PROJECT_NAME}
+        SOURCES
+            ...
+        USES
+            fty_common_logging
+            ...
