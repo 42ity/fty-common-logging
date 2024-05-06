@@ -7,6 +7,7 @@
 TEST_CASE("Main")
 {
     INFO(" * fty_log");
+
     INFO(" * Check default log");
     ManageFtyLog::getInstanceFtylog()->setLogLevelTrace();
     log_trace("This is a simple %s log with default logger", "trace");
@@ -21,6 +22,7 @@ TEST_CASE("Main")
     INFO(" * Check level test \n");
     ManageFtyLog::setInstanceFtylog("fty-log-agent");
     Ftylog* test = ManageFtyLog::getInstanceFtylog();
+    REQUIRE(test);
 
     test->setLogLevelTrace();
     log_trace_log(test, "This is a simple trace log");
@@ -106,11 +108,6 @@ TEST_CASE("Main")
     test->setVerboseMode();
     log_trace_log(test, "This is a verbose trace log");
     INFO(" * Check verbose : OK");
-
-    INFO(" * Check legacy misnamed vebose");
-    test->setVeboseMode();
-    log_trace_log(test, "This is a legacy misnamed vebose trace log");
-    INFO(" * Check legacy misnamed vebose : OK");
 
     // delete the log file test
     remove("./src/selftest-rw/logfile.log");
