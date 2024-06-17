@@ -19,8 +19,7 @@
     =========================================================================
  */
 
-#ifndef FTY_LOG_H_INCLUDED
-#define FTY_LOG_H_INCLUDED
+#pragma once
 
 #include <string.h>
 
@@ -250,14 +249,14 @@ public:
     void insertLog(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, va_list args);
     void insertLog(log4cplus::LogLevel level, const char* file, int line, const char* func, const char* format, ...);
 
-    // Load a specific appender if verbose mode is set to true :
-    // -Save the logger logging level and set it to TRACE logging level
-    // -Remove an already existing ConsoleAppender
-    // -For the other appender, set the threshold parameter to the old logger log level
-    //    if no loglevel defined for this appender
-    // -Add a new console appender
+    /** Load a specific appender if verbose mode is set to true :
+     * - Save the logger logging level and set it to TRACE logging level
+     * - Remove an already existing ConsoleAppender
+     * - For the other appender, set the threshold parameter to the old logger log level
+     *    if no loglevel defined for this appender
+     * - Add a new console appender
+     */
     void setVerboseMode();
-    void setVeboseMode() { setVerboseMode(); } // legacy misnomer
 
     /**
      * Set a context for a mapped diagnostic context (MDC)
@@ -289,9 +288,12 @@ public:
     static void setInstanceFtylog(std::string componentName, std::string logConfigFile = "");
 };
 
-#else
+#else //__cplusplus
+
+// C/ Ftylog typedef
 typedef struct Ftylog Ftylog;
-#endif
+
+#endif // __cplusplus
 
 #ifdef __cplusplus
 extern "C" {
@@ -338,7 +340,6 @@ void ftylog_insertLog(Ftylog* log, int level, const char* file, int line, const 
 //    if no loglevel defined for this appender
 // -Add a new console appender
 void ftylog_setVerboseMode(Ftylog* log);
-void ftylog_setVeboseMode(Ftylog* log); // legacy misnomer
 
 // Return the Ftylog obect from the instance (C code)
 Ftylog* ftylog_getInstance();
@@ -347,10 +348,4 @@ void ftylog_setInstance(const char* component, const char* configFile);
 
 #ifdef __cplusplus
 }
-#endif
-
-//  Self test of this class
-void fty_common_log_fty_log_test(bool verbose);
-
-//  @end
 #endif
