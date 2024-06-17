@@ -530,12 +530,6 @@ void ftylog_insertLog(Ftylog* log, int level, const char* file, int line, const 
     va_end(args);
 }
 
-// Switch to verbose mode
-void ftylog_setVeboseMode(Ftylog* log) // legacy misnomer
-{
-    ftylog_setVerboseMode(log);
-}
-
 void ftylog_setVerboseMode(Ftylog* log)
 {
     if (log) log->setVerboseMode();

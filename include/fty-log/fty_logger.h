@@ -46,15 +46,17 @@
 
 #ifdef __cplusplus
 
-#define log_macro(level, ftylogger, ...)                                                                               \
-    do {                                                                                                               \
-        ftylogger->insertLog((level), __FILE__, __LINE__, __func__, __VA_ARGS__);                                      \
+#define log_macro(level, ftylogger, ...)                                          \
+    do {                                                                          \
+        ftylogger->insertLog((level), __FILE__, __LINE__, __func__, __VA_ARGS__); \
     } while (0)
 #else
-#define log_macro(level, ftylogger, ...)                                                                               \
-    do {                                                                                                               \
-        ftylog_insertLog(ftylogger, (level), __FILE__, __LINE__, __func__, __VA_ARGS__);                               \
+
+#define log_macro(level, ftylogger, ...)                                                 \
+    do {                                                                                 \
+        ftylog_insertLog(ftylogger, (level), __FILE__, __LINE__, __func__, __VA_ARGS__); \
     } while (0)
+
 #endif
 
 // Logging with explicit logger
@@ -282,7 +284,7 @@ private:
     static Ftylog _ftylogdefault;
 
 public:
-    // Return the Ftylog obect from the instance
+    // Return the Ftylog object from the instance
     static Ftylog* getInstanceFtylog();
     // Create or replace the Ftylog object in the instance using a new Ftylog object
     static void setInstanceFtylog(std::string componentName, std::string logConfigFile = "");
