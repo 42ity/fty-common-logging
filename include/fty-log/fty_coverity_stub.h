@@ -34,4 +34,21 @@
         }
     }
 
+    // Stub for coverity analysis (memory leak defect)
+    // https://github.com/42ity/fty-common-mlm/blob/release/IPM-2.8.2/include/fty_common_mlm_guards.h
+    class ZstrGuard
+    {
+    public:
+        ZstrGuard() : ptr_(nullptr) {}
+        explicit ZstrGuard(char* ptr) : ptr_(ptr) {}
+        ZstrGuard(const ZstrGuard&) = delete;
+        ~ZstrGuard() { destruct(); }
+        ZstrGuard* operator=(char* ptr) { destruct(); ptr_ = ptr; return ptr_; }
+        operator char*() { return ptr_; }
+        char* get() { return ptr_; }
+    private:
+        void destruct() { ztr_free(&ptr_); }
+        char* ptr_{nullptr};
+    };
+
 #endif //COVERITY_STUB
